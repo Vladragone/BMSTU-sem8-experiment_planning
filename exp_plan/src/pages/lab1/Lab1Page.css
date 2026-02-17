@@ -1,0 +1,212 @@
+﻿.lab1-panel {
+  width: min(1120px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.lab1-header .subtitle {
+  margin: 8px 0 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.form-grid label,
+.options-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: #315069;
+}
+
+.form-grid input,
+.options-grid select {
+  width: 100%;
+  border: 1px solid #bbcedf;
+  border-radius: 10px;
+  padding: 10px 11px;
+  font-size: 0.95rem;
+  color: #17324a;
+  background: #fdfefe;
+}
+
+.form-grid input:focus,
+.options-grid select:focus {
+  outline: 2px solid #88c8dd;
+  border-color: #88c8dd;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.service-hint {
+  border: 1px solid #d7e3ef;
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: linear-gradient(180deg, #f3f9ff 0%, #eff5fb 100%);
+}
+
+.service-hint p {
+  margin: 4px 0;
+  color: #3b5870;
+}
+
+.actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.error-text {
+  margin: 0;
+  color: #b42318;
+  font-weight: 600;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.metric-card {
+  border-radius: 14px;
+  border: 1px solid #d7e3ef;
+  background: #fdfefe;
+  padding: 12px 14px;
+}
+
+.metric-card h3 {
+  margin: 0 0 8px;
+  color: #21435f;
+}
+
+.metric-card p {
+  margin: 6px 0;
+  color: #355772;
+}
+
+.table-wrap {
+  border-radius: 14px;
+  border: 1px solid #d7e3ef;
+  background: #fdfefe;
+  padding: 12px 14px;
+}
+
+.table-wrap h3 {
+  margin: 0 0 10px;
+  color: #21435f;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid #e4edf4;
+  padding: 8px;
+  text-align: left;
+  color: #355772;
+}
+
+th {
+  color: #21435f;
+  font-weight: 700;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.chart-card {
+  border-radius: 14px;
+  border: 1px solid #d7e3ef;
+  background: #fdfefe;
+  padding: 12px;
+}
+
+.chart-card h3 {
+  margin: 0 0 8px;
+  color: #21435f;
+  font-size: 1rem;
+}
+
+.chart-card svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.axis {
+  stroke: #547590;
+  stroke-width: 1.2;
+}
+
+.grid-line {
+  stroke: #d7e6f2;
+  stroke-width: 1;
+}
+
+.line {
+  fill: none;
+  stroke: #0e7490;
+  stroke-width: 2.4;
+}
+
+.dot {
+  fill: #0e7490;
+  stroke: #ffffff;
+  stroke-width: 1.2;
+}
+
+.tick {
+  fill: #506f89;
+  font-size: 11px;
+}
+
+.label {
+  fill: #2b4b66;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.main-menu-button {
+  margin-top: 2px;
+  max-width: 260px;
+}
+
+@media (max-width: 980px) {
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .metrics-grid,
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .options-grid,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .main-menu-button,
+  .actions-row .lab-button {
+    width: 100%;
+    max-width: 100%;
+  }
+}
