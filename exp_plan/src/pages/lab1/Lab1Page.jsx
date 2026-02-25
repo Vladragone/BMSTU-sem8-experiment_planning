@@ -172,7 +172,7 @@ function Lab1Page({ onBack }) {
                 <LineChart
                   key={curve.key}
                   title={curve.label}
-                  xLabel={curve.key === 'R' ? 'R' : curve.key}
+                  xLabel={curve.xLabel}
                   points={curve.points}
                 />
               ))}
