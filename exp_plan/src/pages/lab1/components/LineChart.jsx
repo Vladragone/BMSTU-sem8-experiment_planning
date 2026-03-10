@@ -57,10 +57,6 @@ function LineChart({ title, xLabel, points }) {
         <line x1={padLeft} y1={padTop} x2={padLeft} y2={height - padBottom} className="axis" />
         <polyline className="line" points={polyline} />
 
-        {points.map((point, index) => (
-          <circle key={index} cx={mapX(point.x)} cy={mapY(point.y)} r="4.4" className="dot" />
-        ))}
-
         {xTicks.map((tick, index) => (
           <text key={`tx-${index}`} x={tick.x} y={height - padBottom + 16} textAnchor="middle" className="tick">
             {formatNumber(tick.value, 2)}

@@ -1,23 +1,25 @@
 export const DEFAULT_INPUTS = {
-  lambda1: '0.28',
-  lambda2: '0.22',
-  mu1: '0.95',
-  mu2: '1.15',
-  sigma1: '0.08',
-  sigma2: '0.10',
-  timeLimit: '30000',
+  lambda1: '1',
+  lambda2: '1.5',
+  mu1: '6',
+  mu2: '8',
+  sigma1: '0.1',
+  sigma2: '0.15',
+  timeLimit: '25000',
   priorityType: '1',
   preemptionPolicy: 'queue',
 }
 
 export const EPS = 1e-9
 
-export const CURVE_SCALES = [0.55, 0.7, 0.85, 1.0, 1.15, 1.3, 1.45]
+export const CURVE_SCALES = Array.from({ length: 25 }, (_, i) => 0.4 + i * 0.05)
+export const CURVE_RUNS_PER_POINT = 50
 
 export const CURVE_DEFS = [
-  { key: 'lambda1', label: 't ожидания от λ1' },
-  { key: 'lambda2', label: 't ожидания от λ2' },
-  { key: 'mu1', label: 't ожидания от μ1' },
-  { key: 'mu2', label: 't ожидания от μ2' },
-  { key: 'R', label: 't ожидания от R' },
+  { id: 't1-lambda1', xKey: 'lambda1', xLabel: 'lambda1', waitType: 1, label: 't1 от lambda1' },
+  { id: 't2-lambda2', xKey: 'lambda2', xLabel: 'lambda2', waitType: 2, label: 't2 от lambda2' },
+  { id: 't1-m1', xKey: 'mu1', xLabel: 'm1', waitType: 1, label: 't1 от m1' },
+  { id: 't2-m2', xKey: 'mu2', xLabel: 'm2', waitType: 2, label: 't2 от m2' },
+  { id: 't1-r', xKey: 'R', xLabel: 'R', waitType: 1, label: 't1 от R' },
+  { id: 't2-r', xKey: 'R', xLabel: 'R', waitType: 2, label: 't2 от R' },
 ]
