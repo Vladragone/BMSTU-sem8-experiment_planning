@@ -1,10 +1,22 @@
-﻿import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import Lab1Page from './pages/lab1/Lab1Page'
+import Lab2Page from './pages/lab2/Lab2Page'
 
 const LAB1_HASH = '#lab-1'
+const LAB2_HASH = '#lab-2'
 
-const getCurrentPage = () => (window.location.hash === LAB1_HASH ? 'lab1' : 'home')
+const getCurrentPage = () => {
+  if (window.location.hash === LAB1_HASH) {
+    return 'lab1'
+  }
+
+  if (window.location.hash === LAB2_HASH) {
+    return 'lab2'
+  }
+
+  return 'home'
+}
 
 function App() {
   const [currentPage, setCurrentPage] = useState(getCurrentPage)
@@ -24,6 +36,10 @@ function App() {
     window.location.hash = LAB1_HASH
   }
 
+  const openLab2Page = () => {
+    window.location.hash = LAB2_HASH
+  }
+
   const openMainMenu = () => {
     window.location.hash = ''
     setCurrentPage('home')
@@ -31,6 +47,10 @@ function App() {
 
   if (currentPage === 'lab1') {
     return <Lab1Page onBack={openMainMenu} />
+  }
+
+  if (currentPage === 'lab2') {
+    return <Lab2Page onBack={openMainMenu} />
   }
 
   return (
@@ -41,7 +61,7 @@ function App() {
           <button className="lab-button" type="button" onClick={openLab1Page}>
             Лабораторная работа №1
           </button>
-          <button className="lab-button" type="button" disabled>
+          <button className="lab-button" type="button" onClick={openLab2Page}>
             Лабораторная работа №2
           </button>
           <button className="lab-button" type="button" disabled>

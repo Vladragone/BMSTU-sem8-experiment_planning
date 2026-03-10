@@ -1,0 +1,105 @@
+.lab2-panel {
+  width: min(1280px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.lab2-header .subtitle {
+  margin: 8px 0 0;
+}
+
+.lab2-controls,
+.factor-grid,
+.equations-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.lab2-controls {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.lab2-controls label,
+.factor-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: #315069;
+}
+
+.lab2-controls input,
+.lab2-controls select,
+.factor-card input {
+  width: 100%;
+  border: 1px solid #bbcedf;
+  border-radius: 10px;
+  padding: 10px 11px;
+  font-size: 0.95rem;
+  color: #17324a;
+  background: #fdfefe;
+}
+
+.lab2-controls input:focus,
+.lab2-controls select:focus,
+.factor-card input:focus {
+  outline: 2px solid #88c8dd;
+  border-color: #88c8dd;
+}
+
+.factor-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.factor-card,
+.equation-card {
+  border-radius: 14px;
+  border: 1px solid #d7e3ef;
+  background: #fdfefe;
+  padding: 12px 14px;
+}
+
+.factor-card h3,
+.equation-card h3 {
+  margin: 0 0 8px;
+  color: #21435f;
+}
+
+.factor-card p,
+.equation-card p {
+  margin: 6px 0;
+  color: #355772;
+  word-break: break-word;
+}
+
+.factor-center {
+  font-weight: 600;
+}
+
+.equations-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+@media (max-width: 1080px) {
+  .lab2-controls,
+  .factor-grid,
+  .equations-grid,
+  .metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .lab2-controls,
+  .factor-grid,
+  .equations-grid,
+  .metrics-grid,
+  .options-grid {
+    grid-template-columns: 1fr;
+  }
+}
