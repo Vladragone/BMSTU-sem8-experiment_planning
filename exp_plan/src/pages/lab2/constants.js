@@ -1,4 +1,4 @@
-import { DEFAULT_INPUTS } from '../lab1/constants'
+import { DEFAULT_INPUTS } from '../lab1/constants.js'
 
 const createRange = (center, spread) => ({
   min: (center - spread).toFixed(3),
@@ -37,21 +37,21 @@ export const FACTOR_DEFS = [
   {
     key: 'sigma1',
     label: 'σ1',
-    description: 'Среднеквадратическое отклонение обслуживания типа 1',
+    description: 'СКО времени обслуживания заявок типа 1',
     naturalName: 'σ1',
     range: createRange(Number(DEFAULT_INPUTS.sigma1), 0.03),
   },
   {
     key: 'sigma2',
     label: 'σ2',
-    description: 'Среднеквадратическое отклонение обслуживания типа 2',
+    description: 'СКО времени обслуживания заявок типа 2',
     naturalName: 'σ2',
     range: createRange(Number(DEFAULT_INPUTS.sigma2), 0.03),
   },
 ]
 
 export const DEFAULT_LAB2_INPUTS = {
-  timeLimit: DEFAULT_INPUTS.timeLimit,
+  requestLimit: '1000',
   priorityType: DEFAULT_INPUTS.priorityType,
   preemptionPolicy: DEFAULT_INPUTS.preemptionPolicy,
   replications: '3',

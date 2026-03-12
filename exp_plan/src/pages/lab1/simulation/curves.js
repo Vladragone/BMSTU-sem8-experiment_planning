@@ -2,8 +2,8 @@ import {
   CURVE_DEFS,
   CURVE_RUNS_PER_POINT,
   CURVE_SCALES,
-} from '../constants'
-import { simulateQueue } from './engine'
+} from '../constants.js'
+import { simulateQueue } from './engine.js'
 
 function applyScale(baseParams, xKey, scale) {
   const params = { ...baseParams }

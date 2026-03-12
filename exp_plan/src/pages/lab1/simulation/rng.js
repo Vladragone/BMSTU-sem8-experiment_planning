@@ -1,4 +1,4 @@
-import { EPS } from '../constants'
+import { EPS } from '../constants.js'
 
 export function createRng(seed) {
   let state = seed >>> 0

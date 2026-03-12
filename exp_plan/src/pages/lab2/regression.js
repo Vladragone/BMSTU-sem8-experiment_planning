@@ -1,5 +1,5 @@
-import { simulateQueue, validateParams } from '../lab1/simulation'
-import { FACTOR_DEFS } from './constants'
+import { simulateQueue, validateParams } from '../lab1/simulation/index.js'
+import { FACTOR_DEFS } from './constants.js'
 
 const buildTerms = (includeInteractions) => {
   const terms = FACTOR_DEFS.map((factor, index) => ({
@@ -26,7 +26,7 @@ const buildTerms = (includeInteractions) => {
 }
 
 const parseLab2Inputs = (inputs) => ({
-  timeLimit: Number(inputs.timeLimit),
+  requestLimit: Number(inputs.requestLimit),
   priorityType: Number(inputs.priorityType),
   preemptionPolicy: inputs.preemptionPolicy,
   replications: Number(inputs.replications),
@@ -42,15 +42,15 @@ const parseLab2Inputs = (inputs) => ({
 
 export function validateLab2Inputs(parsed) {
   if (
-    Number.isNaN(parsed.timeLimit) ||
+    Number.isNaN(parsed.requestLimit) ||
     Number.isNaN(parsed.replications) ||
     Number.isNaN(parsed.comparisonReplications)
   ) {
     return 'Заполните параметры эксперимента корректными числами.'
   }
 
-  if (parsed.timeLimit <= 0) {
-    return 'Время моделирования должно быть больше нуля.'
+  if (!Number.isInteger(parsed.requestLimit) || parsed.requestLimit <= 0) {
+    return 'Количество заявок должно быть положительным целым числом.'
   }
 
   if (!Number.isInteger(parsed.replications) || parsed.replications <= 0) {
@@ -97,6 +97,7 @@ const createCenterDeltaMap = (factorRanges) =>
 
 const buildDesignMatrix = (factorRanges) => {
   const runCount = 2 ** FACTOR_DEFS.length
+  const partialTerms = buildTerms(true)
 
   return Array.from({ length: runCount }, (_, index) => {
     const coded = {}
@@ -108,15 +109,17 @@ const buildDesignMatrix = (factorRanges) => {
       natural[factor.key] = level === -1 ? factorRanges[factor.key].min : factorRanges[factor.key].max
     })
 
-    return { run: index + 1, coded, natural }
+    const termValues = partialTerms.reduce(
+      (acc, term) => {
+        acc[term.key] = term.keys.reduce((product, key) => product * coded[key], 1)
+        return acc
+      },
+      { x0: 1 },
+    )
+
+    return { run: index + 1, coded, natural, termValues }
   })
 }
-
-const buildTermValues = (coded, terms) =>
-  terms.reduce((acc, term) => {
-    acc[term.key] = term.keys.reduce((product, key) => product * coded[key], 1)
-    return acc
-  }, {})
 
 const averageResponse = (natural, commonParams, responseKey, replications, seedBase) => {
   let total = 0
@@ -124,7 +127,7 @@ const averageResponse = (natural, commonParams, responseKey, replications, seedB
   for (let index = 0; index < replications; index += 1) {
     const params = {
       ...natural,
-      timeLimit: commonParams.timeLimit,
+      requestLimit: commonParams.requestLimit,
       priorityType: commonParams.priorityType,
       preemptionPolicy: commonParams.preemptionPolicy,
       seed: (seedBase + index * 2654435761) >>> 0,
@@ -164,67 +167,53 @@ const predictByCoefficients = (coded, coefficients, terms) =>
     return sum + coefficients[term.key] * value
   }, coefficients.b0)
 
-const buildNaturalLinearModel = (coefficients, centers, deltas) => {
-  const intercept = FACTOR_DEFS.reduce((sum, factor) => {
-    return sum - (coefficients[factor.key] * centers[factor.key]) / deltas[factor.key]
-  }, coefficients.b0)
+const expandNormalizedModel = (coefficients, terms, centers, deltas) => {
+  const naturalCoefficients = new Map([['', coefficients.b0]])
 
-  return {
-    intercept,
-    terms: FACTOR_DEFS.map((factor) => ({
-      name: factor.naturalName,
-      coefficient: coefficients[factor.key] / deltas[factor.key],
-    })),
-    interactionTerms: [],
+  const addCoefficient = (key, value) => {
+    naturalCoefficients.set(key, (naturalCoefficients.get(key) ?? 0) + value)
   }
-}
 
-const buildNaturalPartialModel = (coefficients, centers, deltas) => {
-  const mainTerms = FACTOR_DEFS.reduce((acc, factor) => {
-    acc[factor.key] = coefficients[factor.key] / deltas[factor.key]
-    return acc
-  }, {})
+  terms.forEach((term) => {
+    const normalizedCoefficient = coefficients[term.key]
+    let partialProducts = [{ key: '', coefficient: normalizedCoefficient }]
 
-  const interactionTerms = []
+    term.keys.forEach((factorKey) => {
+      const nextProducts = []
 
-  for (let i = 0; i < FACTOR_DEFS.length; i += 1) {
-    for (let j = i + 1; j < FACTOR_DEFS.length; j += 1) {
-      const left = FACTOR_DEFS[i]
-      const right = FACTOR_DEFS[j]
-      const key = `${left.key}:${right.key}`
-      const coefficient = coefficients[key] / (deltas[left.key] * deltas[right.key])
-
-      interactionTerms.push({
-        left: left.naturalName,
-        right: right.naturalName,
-        coefficient,
+      partialProducts.forEach((product) => {
+        nextProducts.push({
+          key: product.key ? `${product.key}:${factorKey}` : factorKey,
+          coefficient: product.coefficient / deltas[factorKey],
+        })
+        nextProducts.push({
+          key: product.key,
+          coefficient: (-product.coefficient * centers[factorKey]) / deltas[factorKey],
+        })
       })
 
-      mainTerms[left.key] -=
-        (coefficients[key] * centers[right.key]) / (deltas[left.key] * deltas[right.key])
-      mainTerms[right.key] -=
-        (coefficients[key] * centers[left.key]) / (deltas[left.key] * deltas[right.key])
-    }
-  }
+      partialProducts = nextProducts
+    })
 
-  const intercept =
-    coefficients.b0 -
-    FACTOR_DEFS.reduce((sum, factor) => {
-      return sum + (coefficients[factor.key] * centers[factor.key]) / deltas[factor.key]
-    }, 0) +
-    interactionTerms.reduce((sum, term) => {
-      const left = FACTOR_DEFS.find((factor) => factor.naturalName === term.left)
-      const right = FACTOR_DEFS.find((factor) => factor.naturalName === term.right)
-      return sum + term.coefficient * centers[left.key] * centers[right.key]
-    }, 0)
+    partialProducts.forEach((product) => {
+      addCoefficient(product.key, product.coefficient)
+    })
+  })
 
   return {
-    intercept,
+    intercept: naturalCoefficients.get('') ?? 0,
     terms: FACTOR_DEFS.map((factor) => ({
       name: factor.naturalName,
-      coefficient: mainTerms[factor.key],
+      coefficient: naturalCoefficients.get(factor.key) ?? 0,
     })),
-    interactionTerms,
+    interactionTerms: Array.from(naturalCoefficients.entries())
+      .filter(([key]) => key && key.includes(':'))
+      .map(([key, coefficient]) => ({
+        factors: key.split(':').map(
+          (factorKey) => FACTOR_DEFS.find((factor) => factor.key === factorKey).naturalName,
+        ),
+        coefficient,
+      })),
   }
 }
 
@@ -256,7 +245,7 @@ const buildNaturalEquation = (model) => {
   model.interactionTerms.forEach((term) => {
     const sign = term.coefficient >= 0 ? '+' : '-'
     chunks.push(
-      `${sign} ${formatEquationCoefficient(Math.abs(term.coefficient))}${term.left}${term.right}`,
+      `${sign} ${formatEquationCoefficient(Math.abs(term.coefficient))}${term.factors.join('')}`,
     )
   })
 
@@ -297,7 +286,6 @@ export function runFullFactorExperiment(inputs, responseKey) {
         parsed.replications,
         123456789 + index * 977,
       ),
-      termValues: buildTermValues(row.coded, partialTerms),
     }))
   } catch (error) {
     return { error: error.message }
@@ -317,7 +305,7 @@ export function runFullFactorExperiment(inputs, responseKey) {
       coefficients: linearCoefficients,
       normalizedEquation: buildNormalizedEquation(linearCoefficients, linearTerms),
       naturalEquation: buildNaturalEquation(
-        buildNaturalLinearModel(linearCoefficients, centers, deltas),
+        expandNormalizedModel(linearCoefficients, linearTerms, centers, deltas),
       ),
       experiments: attachPredictions(experiments, linearCoefficients, linearTerms),
     },
@@ -326,7 +314,7 @@ export function runFullFactorExperiment(inputs, responseKey) {
       coefficients: partialCoefficients,
       normalizedEquation: buildNormalizedEquation(partialCoefficients, partialTerms),
       naturalEquation: buildNaturalEquation(
-        buildNaturalPartialModel(partialCoefficients, centers, deltas),
+        expandNormalizedModel(partialCoefficients, partialTerms, centers, deltas),
       ),
       experiments: attachPredictions(experiments, partialCoefficients, partialTerms),
     },

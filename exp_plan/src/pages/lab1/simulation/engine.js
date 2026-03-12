@@ -1,5 +1,5 @@
-import { EPS } from '../constants'
-import { createRng, sampleExponential, sampleNormal } from './rng'
+import { EPS } from '../constants.js'
+import { createRng, sampleExponential, sampleNormal } from './rng.js'
 
 export function simulateQueue(params) {
   const {
@@ -10,6 +10,7 @@ export function simulateQueue(params) {
     sigma1,
     sigma2,
     timeLimit,
+    requestLimit,
     priorityType,
     preemptionPolicy,
     seed,
@@ -20,6 +21,7 @@ export function simulateQueue(params) {
   const serviceSigma = { 1: sigma1, 2: sigma2 }
   const rates = { 1: lambda1, 2: lambda2 }
   const lowPriorityType = priorityType === 1 ? 2 : 1
+  const limitByRequests = requestLimit !== undefined
 
   const queue = { 1: [], 2: [] }
   const byType = {
@@ -30,10 +32,13 @@ export function simulateQueue(params) {
   let now = 0
   let busyTime = 0
   let dropped = 0
+  let arrivedTotal = 0
   let server = null
 
-  let nextArrival1 = sampleExponential(rates[1], rng)
-  let nextArrival2 = sampleExponential(rates[2], rng)
+  const canScheduleArrival = () => !limitByRequests || arrivedTotal < requestLimit
+
+  let nextArrival1 = canScheduleArrival() ? sampleExponential(rates[1], rng) : Number.POSITIVE_INFINITY
+  let nextArrival2 = canScheduleArrival() ? sampleExponential(rates[2], rng) : Number.POSITIVE_INFINITY
 
   const enqueue = (job) => {
     queue[job.type].push(job)
@@ -84,6 +89,7 @@ export function simulateQueue(params) {
   }
 
   const handleArrival = (type) => {
+    arrivedTotal += 1
     const job = createJob(type, now)
 
     if (server === null) {
@@ -108,9 +114,18 @@ export function simulateQueue(params) {
     enqueue(job)
   }
 
-  while (now < timeLimit) {
+  while (true) {
+    if (limitByRequests && !canScheduleArrival() && !server && queue[1].length === 0 && queue[2].length === 0) {
+      break
+    }
+
+    if (!limitByRequests && now >= timeLimit) {
+      break
+    }
+
     const nextCompletion = server ? now + server.remaining : Number.POSITIVE_INFINITY
-    const nextEventTime = Math.min(nextArrival1, nextArrival2, nextCompletion, timeLimit)
+    const stopTime = limitByRequests ? Number.POSITIVE_INFINITY : timeLimit
+    const nextEventTime = Math.min(nextArrival1, nextArrival2, nextCompletion, stopTime)
 
     if (!Number.isFinite(nextEventTime)) {
       break
@@ -139,13 +154,17 @@ export function simulateQueue(params) {
     }
 
     if (arrival1Now) {
-      nextArrival1 = now + sampleExponential(rates[1], rng)
       handleArrival(1)
+      nextArrival1 = canScheduleArrival()
+        ? now + sampleExponential(rates[1], rng)
+        : Number.POSITIVE_INFINITY
     }
 
     if (arrival2Now) {
-      nextArrival2 = now + sampleExponential(rates[2], rng)
       handleArrival(2)
+      nextArrival2 = canScheduleArrival()
+        ? now + sampleExponential(rates[2], rng)
+        : Number.POSITIVE_INFINITY
     }
 
     maybeStartNext()
@@ -162,7 +181,8 @@ export function simulateQueue(params) {
   const rho1 = lambda1 / mu1
   const rho2 = lambda2 / mu2
   const theoreticalR = rho1 + rho2
-  const factualR = timeLimit > 0 ? busyTime / timeLimit : 0
+  const observationWindow = limitByRequests ? now : timeLimit
+  const factualR = observationWindow > 0 ? busyTime / observationWindow : 0
 
   return {
     rho1,
@@ -171,6 +191,8 @@ export function simulateQueue(params) {
     factualR,
     completedTotal,
     dropped,
+    arrivedTotal,
+    simulatedTime: now,
     avgWaitOverall: completedTotal > 0 ? waitSumTotal / completedTotal : 0,
     avgStayOverall: completedTotal > 0 ? staySumTotal / completedTotal : 0,
     byType: {
