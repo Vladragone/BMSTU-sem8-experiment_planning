@@ -1,0 +1,150 @@
+.lab3-python-panel {
+  width: min(1180px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.lab3-tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.lab3-tab {
+  border: 1px solid #c9d5df;
+  background: #eef4f8;
+  color: #17324a;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font: inherit;
+}
+
+.lab3-tab.active {
+  background: #d6e8f3;
+  border-color: #8fb5cc;
+}
+
+.lab3-tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.lab3-tab-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lab3-frame {
+  border: 1px solid #d7e3ef;
+  border-radius: 14px;
+  background: #fdfefe;
+  padding: 16px;
+}
+
+.lab3-frame h3 {
+  margin: 0 0 12px;
+}
+
+.lab3-inline-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.lab3-inline-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.lab3-inline-grid label,
+.lab3-validation-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #315069;
+}
+
+.lab3-inline-grid input,
+.lab3-inline-grid select,
+.lab3-frame > input,
+.lab3-validation-grid input,
+.lab3-factor-row input {
+  width: 100%;
+  border: 1px solid #bbcedf;
+  border-radius: 10px;
+  padding: 10px 11px;
+  font-size: 0.95rem;
+  color: #17324a;
+  background: #fff;
+}
+
+.lab3-check {
+  justify-content: flex-end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lab3-check input {
+  width: auto;
+}
+
+.lab3-factor-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lab3-factor-head {
+  font-weight: 600;
+  color: #17324a;
+}
+
+.lab3-factor-row {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(220px, 2fr) 120px 20px 120px minmax(120px, 1fr);
+  align-items: center;
+}
+
+.lab3-range-dash {
+  text-align: center;
+  color: #47617a;
+}
+
+.lab3-center-note {
+  color: #47617a;
+  font-size: 0.9rem;
+}
+
+.lab3-progress {
+  margin: 0;
+  color: #315069;
+}
+
+.lab3-pre {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: Consolas, 'Courier New', monospace;
+  line-height: 1.45;
+}
+
+.lab3-validation-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 900px) {
+  .lab3-inline-grid,
+  .lab3-inline-grid.two,
+  .lab3-validation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lab3-factor-row {
+    grid-template-columns: 1fr;
+  }
+}

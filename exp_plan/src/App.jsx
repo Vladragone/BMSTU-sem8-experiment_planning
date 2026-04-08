@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import Lab1Page from './pages/lab1/Lab1Page'
 import Lab2Page from './pages/lab2/Lab2Page'
+import Lab3Page from './pages/lab3/Lab3Page'
 
 const LAB1_HASH = '#lab-1'
 const LAB2_HASH = '#lab-2'
+const LAB3_HASH = '#lab-3'
 
 const getCurrentPage = () => {
   if (window.location.hash === LAB1_HASH) {
@@ -13,6 +15,10 @@ const getCurrentPage = () => {
 
   if (window.location.hash === LAB2_HASH) {
     return 'lab2'
+  }
+
+  if (window.location.hash === LAB3_HASH) {
+    return 'lab3'
   }
 
   return 'home'
@@ -40,6 +46,10 @@ function App() {
     window.location.hash = LAB2_HASH
   }
 
+  const openLab3Page = () => {
+    window.location.hash = LAB3_HASH
+  }
+
   const openMainMenu = () => {
     window.location.hash = ''
     setCurrentPage('home')
@@ -53,6 +63,10 @@ function App() {
     return <Lab2Page onBack={openMainMenu} />
   }
 
+  if (currentPage === 'lab3') {
+    return <Lab3Page onBack={openMainMenu} />
+  }
+
   return (
     <main className="page">
       <section className="panel">
@@ -64,7 +78,7 @@ function App() {
           <button className="lab-button" type="button" onClick={openLab2Page}>
             Лабораторная работа №2
           </button>
-          <button className="lab-button" type="button" disabled>
+          <button className="lab-button" type="button" onClick={openLab3Page}>
             Лабораторная работа №3
           </button>
           <button className="lab-button" type="button" disabled>
