@@ -1,0 +1,85 @@
+.lab4-panel {
+  width: min(1260px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.lab4-grid,
+.lab4-equations,
+.lab4-constants {
+  display: grid;
+  gap: 12px;
+}
+
+.lab4-grid,
+.lab4-constants {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.lab4-equations {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.lab4-card {
+  border-radius: 14px;
+  border: 1px solid #d7e3ef;
+  background: #fdfefe;
+  padding: 12px 14px;
+}
+
+.lab4-card h3 {
+  margin: 0 0 8px;
+  color: #21435f;
+}
+
+.lab4-card p,
+.lab4-note {
+  margin: 6px 0;
+  color: #355772;
+}
+
+.lab4-grid label,
+.lab4-validation-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #315069;
+}
+
+.lab4-grid input,
+.lab4-validation-grid input {
+  width: 100%;
+  border: 1px solid #bbcedf;
+  border-radius: 10px;
+  padding: 10px 11px;
+  font-size: 0.95rem;
+  color: #17324a;
+  background: #fff;
+}
+
+.lab4-factor-row {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(220px, 2fr) 130px 20px 130px minmax(120px, 1fr);
+  align-items: center;
+}
+
+.lab4-validation-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 980px) {
+  .lab4-grid,
+  .lab4-equations,
+  .lab4-constants,
+  .lab4-validation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lab4-factor-row {
+    grid-template-columns: 1fr;
+  }
+}

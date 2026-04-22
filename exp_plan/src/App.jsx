@@ -3,10 +3,12 @@ import './App.css'
 import Lab1Page from './pages/lab1/Lab1Page'
 import Lab2Page from './pages/lab2/Lab2Page'
 import Lab3Page from './pages/lab3/Lab3Page'
+import Lab4Page from './pages/lab4/Lab4Page'
 
 const LAB1_HASH = '#lab-1'
 const LAB2_HASH = '#lab-2'
 const LAB3_HASH = '#lab-3'
+const LAB4_HASH = '#lab-4'
 
 const getCurrentPage = () => {
   if (window.location.hash === LAB1_HASH) {
@@ -19,6 +21,10 @@ const getCurrentPage = () => {
 
   if (window.location.hash === LAB3_HASH) {
     return 'lab3'
+  }
+
+  if (window.location.hash === LAB4_HASH) {
+    return 'lab4'
   }
 
   return 'home'
@@ -50,6 +56,10 @@ function App() {
     window.location.hash = LAB3_HASH
   }
 
+  const openLab4Page = () => {
+    window.location.hash = LAB4_HASH
+  }
+
   const openMainMenu = () => {
     window.location.hash = ''
     setCurrentPage('home')
@@ -67,6 +77,10 @@ function App() {
     return <Lab3Page onBack={openMainMenu} />
   }
 
+  if (currentPage === 'lab4') {
+    return <Lab4Page onBack={openMainMenu} />
+  }
+
   return (
     <main className="page">
       <section className="panel">
@@ -81,7 +95,7 @@ function App() {
           <button className="lab-button" type="button" onClick={openLab3Page}>
             Лабораторная работа №3
           </button>
-          <button className="lab-button" type="button" disabled>
+          <button className="lab-button" type="button" onClick={openLab4Page}>
             Лабораторная работа №4
           </button>
         </div>

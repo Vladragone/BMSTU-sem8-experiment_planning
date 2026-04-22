@@ -271,8 +271,6 @@ function Lab3Page({ onBack }) {
     validation: Boolean(result),
   }
 
-  const displayedExperiment = result?.pfe ?? result?.dfe ?? null
-
   return (
     <main className="page">
       <section className="panel lab3-python-panel">
